@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.ederu.lazycompose.DAO.ProductDAO
 import br.com.ederu.lazycompose.R
 import br.com.ederu.lazycompose.model.Product
 import br.com.ederu.lazycompose.ui.theme.LazyComposeLazyLayoutsStateTheme
@@ -46,12 +47,17 @@ import java.math.BigDecimal
 import java.text.DecimalFormat
 
 class ProductFormActivity : ComponentActivity() {
+    private val dao = ProductDAO()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             LazyComposeLazyLayoutsStateTheme {
                 Surface {
-                    ProductFormScreen()
+                    ProductFormScreen(onSaveClick = { product ->
+                        dao.save(product)
+                        finish()
+                    })
                 }
             }
         }
@@ -60,7 +66,9 @@ class ProductFormActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductFormScreen() {
+fun ProductFormScreen(
+    onSaveClick: (Product) -> Unit = {}
+) {
     Column(
         modifier =
         Modifier
@@ -202,6 +210,7 @@ fun ProductFormScreen() {
                 )
 
                 Log.i("ProductformActivity", "ProductFormScreen: $product")
+                onSaveClick(product)
             }) {
             Text(text = "Salvar")
             Spacer(modifier = Modifier)

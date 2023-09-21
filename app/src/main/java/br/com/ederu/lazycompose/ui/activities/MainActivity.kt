@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.ederu.lazycompose.DAO.ProductDAO
 import br.com.ederu.lazycompose.sampledata.sampleCandies
@@ -83,5 +84,13 @@ fun App(
             }
 
         }
+    }
+}
+
+@Preview
+@Composable
+fun AppPreview() {
+    App {
+        HomeScreen(sections = sampleSections)
     }
 }
