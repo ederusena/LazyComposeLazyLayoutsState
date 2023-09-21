@@ -1,5 +1,6 @@
 package br.com.ederu.lazycompose.ui.components
 
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,8 +25,8 @@ fun SearchTextField(searchText: String, onSearchChange: (String) -> Unit) {
             .fillMaxWidth(),
         value = searchText,
         shape = RoundedCornerShape(30.dp),
-        trailingIcon = {
-            Icon(imageVector = Icons.Outlined.Search, contentDescription = "")
+        trailingIcon ={
+            Icon(imageVector = Icons.Outlined.Search, contentDescription = null)
         },
         placeholder = {
             Text(text = "Digite o produto")
