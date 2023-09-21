@@ -20,6 +20,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import br.com.ederu.lazycompose.DAO.ProductDAO
+import br.com.ederu.lazycompose.sampledata.sampleCandies
+import br.com.ederu.lazycompose.sampledata.sampleDrinks
 import br.com.ederu.lazycompose.sampledata.sampleSections
 import br.com.ederu.lazycompose.ui.screens.HomeScreen
 import br.com.ederu.lazycompose.ui.theme.Indigo400
@@ -27,7 +30,7 @@ import br.com.ederu.lazycompose.ui.theme.Indigo400Light
 import br.com.ederu.lazycompose.ui.theme.LazyComposeLazyLayoutsStateTheme
 
 class MainActivity : ComponentActivity() {
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    private val dao = ProductDAO()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -39,7 +42,15 @@ class MainActivity : ComponentActivity() {
                 ) {
                     App(onFabClick = {
                         startActivity(Intent(this, ProductFormActivity::class.java))
-                    })
+                    }) {
+                        val sections = mapOf(
+                            "Todos produtos" to dao.products(),
+                            "Promoções" to sampleDrinks + sampleCandies,
+                            "Doces" to sampleCandies,
+                            "Bebidas" to sampleDrinks
+                        )
+                        HomeScreen(sections = sections)
+                    }
                 }
             }
         }
@@ -48,7 +59,10 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun App(onFabClick: () -> Unit = {}) {
+fun App(
+    onFabClick: () -> Unit = {},
+    content: @Composable () -> Unit = {}
+) {
     LazyComposeLazyLayoutsStateTheme {
         Surface {
             Scaffold(
@@ -64,9 +78,7 @@ fun App(onFabClick: () -> Unit = {}) {
                 }
             ) {
                 Box(modifier = Modifier.padding(it)){
-                    HomeScreen(
-                        sampleSections
-                    )
+                    content()
                 }
             }
 
