@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,7 @@ import br.com.ederu.lazycompose.sampledata.sampleCandies
 import br.com.ederu.lazycompose.sampledata.sampleDrinks
 import br.com.ederu.lazycompose.sampledata.sampleSections
 import br.com.ederu.lazycompose.ui.screens.HomeScreen
+import br.com.ederu.lazycompose.ui.screens.HomeScreenUiState
 import br.com.ederu.lazycompose.ui.theme.Indigo400
 import br.com.ederu.lazycompose.ui.theme.Indigo400Light
 import br.com.ederu.lazycompose.ui.theme.LazyComposeLazyLayoutsStateTheme
@@ -50,7 +52,10 @@ class MainActivity : ComponentActivity() {
                             "Doces" to sampleCandies,
                             "Bebidas" to sampleDrinks
                         )
-                        HomeScreen(sections = sections)
+                        val state = remember {
+                            HomeScreenUiState()
+                        }
+                        HomeScreen(sections = sections, state = state)
                     }
                 }
             }

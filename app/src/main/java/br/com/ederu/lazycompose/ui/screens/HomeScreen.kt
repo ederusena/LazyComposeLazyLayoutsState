@@ -25,30 +25,41 @@ import br.com.ederu.lazycompose.ui.components.ProductsSection
 import br.com.ederu.lazycompose.ui.components.SearchTextField
 import br.com.ederu.lazycompose.ui.theme.LazyComposeLazyLayoutsStateTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+class HomeScreenUiState(searchText: String = "") {
+    var textInputSearch: String by mutableStateOf("")
+        private set
+
+    val filteredProducts: List<Product> get() =
+        if (textInputSearch.isNotBlank()) {
+            sampleProducts.filter { product ->
+                product.name
+                    .contains(textInputSearch, ignoreCase = true) ||
+                        product.description?.contains(textInputSearch, ignoreCase = true) ?: false
+            }
+        } else emptyList()
+
+    fun isShowSection(): Boolean {
+        return textInputSearch.isBlank()
+    }
+
+    val onSearchChange: (String) -> Unit = { searchText ->
+        textInputSearch = searchText
+    }
+}
 @Composable
 fun HomeScreen(
     sections: Map<String, List<Product>>,
-    searchText: String = ""
+    state: HomeScreenUiState = HomeScreenUiState()
 ) {
     Column {
-        var textInputSearch by remember { mutableStateOf(searchText) }
-
-        val filteredProducts = remember(textInputSearch) {
-            if (textInputSearch.isNotBlank()) {
-                sampleProducts.filter { product ->
-                    product.name
-                        .contains(textInputSearch, ignoreCase = true) ||
-                            product.description?.contains(textInputSearch, ignoreCase = true) ?: false
-                }
-            } else emptyList()
+        val text = state.textInputSearch
+        val searchedProducts = remember(text) {
+            state.filteredProducts
         }
-        
+
         SearchTextField(
-            searchText = textInputSearch,
-            onSearchChange = {
-                textInputSearch = it
-            }
+            searchText = text,
+            onSearchChange = state.onSearchChange
         )
 
         LazyColumn(
@@ -57,7 +68,7 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
-            if (textInputSearch.isBlank()) {
+            if (state.isShowSection()) {
                 for (section in sections) {
                     val title = section.key
                     val products = section.value
@@ -66,7 +77,7 @@ fun HomeScreen(
                     }
                 }
             } else {
-                items(filteredProducts) {
+                items(searchedProducts) {
                     CardProductItem(
                         product = it,
                         Modifier.padding(horizontal = 16.dp)
@@ -92,7 +103,10 @@ private fun HomeScreenPreview() {
 private fun HomeScreenWithTextSearchPreview() {
     LazyComposeLazyLayoutsStateTheme {
         Surface {
-            HomeScreen(sampleSections, "Mamae")
+            HomeScreen(
+                sampleSections,
+                state = HomeScreenUiState(searchText = "a")
+            )
         }
     }
 }
